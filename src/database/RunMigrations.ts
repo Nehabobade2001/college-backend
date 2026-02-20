@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import 'reflect-metadata'
 import AppDataSource from '@/config/DataSource'
 import { Logger } from '@nestjs/common'
 import { DataSource } from 'typeorm'

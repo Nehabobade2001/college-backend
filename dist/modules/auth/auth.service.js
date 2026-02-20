@@ -44,7 +44,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
@@ -229,29 +228,29 @@ let AuthService = class AuthService {
             const setting = await manager.findOne(AppSetting_1.AppSetting, {
                 where: { id: 1 },
             });
-            if (setting?.otpSMS || setting?.otpEmail) {
-                if (!requestOtp?.email || !requestOtp?.password) {
-                    (0, GraphQLErrorHandling_1.throwGqlError)(ErrorCodes_1.ErrorCodes.INVALID_USER_AND_PASSWORD);
-                }
-                const user = await manager.findOne(User_1.User, {
-                    where: {
-                        email: requestOtp?.email ?? null,
-                        status: 'active',
-                        ...(userType ? { userType: userType } : {}),
-                    },
-                    select: ['id', 'email', 'password', 'name', 'username', 'userType'],
+            if (!requestOtp?.email || !requestOtp?.password) {
+                (0, GraphQLErrorHandling_1.throwGqlError)(ErrorCodes_1.ErrorCodes.INVALID_USER_AND_PASSWORD);
+            }
+            const user = await manager.findOne(User_1.User, {
+                where: {
+                    email: requestOtp?.email ?? null,
+                    status: 'active',
+                    ...(userType ? { userType: userType } : {}),
+                },
+                select: ['id', 'email', 'password', 'name', 'username', 'userType'],
+            });
+            if (!user) {
+                (0, GraphQLErrorHandling_1.throwGqlError)(ErrorCodes_1.ErrorCodes.USER_NOT_FOUND, {
+                    email: requestOtp?.email,
                 });
-                if (!user) {
-                    (0, GraphQLErrorHandling_1.throwGqlError)(ErrorCodes_1.ErrorCodes.USER_NOT_FOUND, {
-                        email: requestOtp?.email,
-                    });
-                }
-                const isPasswordValid = await argon2.verify(user.password, requestOtp.password);
-                if (!isPasswordValid) {
-                    (0, GraphQLErrorHandling_1.throwGqlError)(ErrorCodes_1.ErrorCodes.INVALID_PASSWORD_INPUT, {
-                        password: requestOtp?.password,
-                    });
-                }
+            }
+            const isPasswordValid = await argon2.verify(user.password, requestOtp.password);
+            if (!isPasswordValid) {
+                (0, GraphQLErrorHandling_1.throwGqlError)(ErrorCodes_1.ErrorCodes.INVALID_PASSWORD_INPUT, {
+                    password: requestOtp?.password,
+                });
+            }
+            if (setting && (setting.otpSMS || setting.otpEmail)) {
                 const otp = await this.otpService.generateOtp(requestOtp, manager, 'login', 5);
                 try {
                     this.mailService.sendOtpMail(otp, requestOtp.email, user, setting);
@@ -266,10 +265,11 @@ let AuthService = class AuthService {
                 };
             }
             else {
+                await queryRunner.commitTransaction();
                 return {
                     otpGeneratedSuccessfully: false,
                     otp: null,
-                    message: 'OTP is not enabled in the settings or no settings found',
+                    message: 'OTP is not enabled in the settings',
                 };
             }
         }
@@ -454,6 +454,8 @@ exports.AuthService = AuthService = __decorate([
     __param(0, (0, typeorm_1.InjectRepository)(User_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         otp_service_1.OtpService,
-        mail_service_1.MailService, typeof (_a = typeof jwt_1.JwtService !== "undefined" && jwt_1.JwtService) === "function" ? _a : Object, apiToken_service_1.ApiTokenService])
+        mail_service_1.MailService,
+        jwt_1.JwtService,
+        apiToken_service_1.ApiTokenService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

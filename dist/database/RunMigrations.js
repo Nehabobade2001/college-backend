@@ -36,6 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+require("reflect-metadata");
 const DataSource_1 = __importDefault(require("../config/DataSource"));
 const common_1 = require("@nestjs/common");
 const seeders = __importStar(require("./seeders/index"));

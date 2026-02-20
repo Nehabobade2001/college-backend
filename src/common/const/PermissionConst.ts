@@ -139,6 +139,50 @@ export const PermissionConst = {
     description: 'Anyone with this permission can change organization status',
   },
 
+  // Center Permissions
+  'MasterApp:Center:Create': {
+    app: 'MasterApp',
+    group: 'Default',
+    module: 'Center',
+    action: 'Create',
+    description: 'Anyone with this permission can create center',
+  },
+  'MasterApp:Center:Read': {
+    app: 'MasterApp',
+    group: 'Default',
+    module: 'Center',
+    action: 'Read',
+    description: 'Anyone with this permission can read center',
+  },
+  'MasterApp:Center:Update': {
+    app: 'MasterApp',
+    group: 'Default',
+    module: 'Center',
+    action: 'Update',
+    description: 'Anyone with this permission can update center',
+  },
+  'MasterApp:Center:Delete': {
+    app: 'MasterApp',
+    group: 'Default',
+    module: 'Center',
+    action: 'Delete',
+    description: 'Anyone with this permission can delete center',
+  },
+  'MasterApp:Center:Restore': {
+    app: 'MasterApp',
+    group: 'Default',
+    module: 'Center',
+    action: 'Restore',
+    description: 'Anyone with this permission can restore center',
+  },
+  'MasterApp:Center:Action': {
+    app: 'MasterApp',
+    group: 'Default',
+    module: 'Center',
+    action: 'Action',
+    description: 'Anyone with this permission can change center status',
+  },
+
   // AppSetting Permissions
   'MasterApp:AppSetting:Create': {
     app: 'MasterApp',

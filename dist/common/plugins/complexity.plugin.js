@@ -8,7 +8,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ComplexityPlugin = void 0;
 const apollo_1 = require("@nestjs/apollo");
@@ -44,6 +43,6 @@ let ComplexityPlugin = class ComplexityPlugin {
 exports.ComplexityPlugin = ComplexityPlugin;
 exports.ComplexityPlugin = ComplexityPlugin = __decorate([
     (0, apollo_1.Plugin)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof graphql_1.GraphQLSchemaHost !== "undefined" && graphql_1.GraphQLSchemaHost) === "function" ? _a : Object])
+    __metadata("design:paramtypes", [graphql_1.GraphQLSchemaHost])
 ], ComplexityPlugin);
 //# sourceMappingURL=complexity.plugin.js.map

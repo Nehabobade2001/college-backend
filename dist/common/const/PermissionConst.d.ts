@@ -132,6 +132,48 @@ export declare const PermissionConst: {
         action: string;
         description: string;
     };
+    'MasterApp:Center:Create': {
+        app: string;
+        group: string;
+        module: string;
+        action: string;
+        description: string;
+    };
+    'MasterApp:Center:Read': {
+        app: string;
+        group: string;
+        module: string;
+        action: string;
+        description: string;
+    };
+    'MasterApp:Center:Update': {
+        app: string;
+        group: string;
+        module: string;
+        action: string;
+        description: string;
+    };
+    'MasterApp:Center:Delete': {
+        app: string;
+        group: string;
+        module: string;
+        action: string;
+        description: string;
+    };
+    'MasterApp:Center:Restore': {
+        app: string;
+        group: string;
+        module: string;
+        action: string;
+        description: string;
+    };
+    'MasterApp:Center:Action': {
+        app: string;
+        group: string;
+        module: string;
+        action: string;
+        description: string;
+    };
     'MasterApp:AppSetting:Create': {
         app: string;
         group: string;

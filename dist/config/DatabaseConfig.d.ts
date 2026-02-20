@@ -1,2 +1,2 @@
 import './EnvConfig';
-export declare const DatabaseConfig: DynamicModule;
+export declare const DatabaseConfig: import("@nestjs/common").DynamicModule;

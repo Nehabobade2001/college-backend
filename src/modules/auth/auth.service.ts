@@ -379,41 +379,41 @@ export class AuthService {
         where: { id: 1 },
       })
 
-      // Check if OTP is enabled in the settings
-      if (setting?.otpSMS || setting?.otpEmail) {
-        // Validate request input
-        if (!requestOtp?.email || !requestOtp?.password) {
-          throwGqlError(ErrorCodes.INVALID_USER_AND_PASSWORD)
-        }
+      // Validate request input
+      if (!requestOtp?.email || !requestOtp?.password) {
+        throwGqlError(ErrorCodes.INVALID_USER_AND_PASSWORD)
+      }
 
-        // Find the user by email, scoped to the correct user type
-        const user = await manager.findOne(User, {
-          where: {
-            email: requestOtp?.email ?? null,
-            status: 'active',
-            ...(userType ? { userType: userType as UserType } : {}),
-          },
-          select: ['id', 'email', 'password', 'name', 'username', 'userType'],
+      // Find the user by email, scoped to the correct user type
+      const user = await manager.findOne(User, {
+        where: {
+          email: requestOtp?.email ?? null,
+          status: 'active',
+          ...(userType ? { userType: userType as UserType } : {}),
+        },
+        select: ['id', 'email', 'password', 'name', 'username', 'userType'],
+      })
+
+      if (!user) {
+        throwGqlError(ErrorCodes.USER_NOT_FOUND, {
+          email: requestOtp?.email,
         })
+      }
 
-        if (!user) {
-          throwGqlError(ErrorCodes.USER_NOT_FOUND, {
-            email: requestOtp?.email,
-          })
-        }
+      // Validate password using argon2
+      const isPasswordValid = await argon2.verify(
+        user.password,
+        requestOtp.password,
+      )
 
-        // Validate password using argon2
-        const isPasswordValid = await argon2.verify(
-          user.password,
-          requestOtp.password,
-        )
+      if (!isPasswordValid) {
+        throwGqlError(ErrorCodes.INVALID_PASSWORD_INPUT, {
+          password: requestOtp?.password,
+        })
+      }
 
-        if (!isPasswordValid) {
-          throwGqlError(ErrorCodes.INVALID_PASSWORD_INPUT, {
-            password: requestOtp?.password,
-          })
-        }
-
+      // Check if OTP is enabled in the settings
+      if (setting && (setting.otpSMS || setting.otpEmail)) {
         // Generate OTP for the user's email
         const otp = await this.otpService.generateOtp(
           requestOtp,
@@ -438,10 +438,13 @@ export class AuthService {
           message: 'OTP sent to your email',
         }
       } else {
+        // Commit the transaction
+        await queryRunner.commitTransaction()
+        
         return {
           otpGeneratedSuccessfully: false,
           otp: null,
-          message: 'OTP is not enabled in the settings or no settings found',
+          message: 'OTP is not enabled in the settings',
         }
       }
     } catch (error) {

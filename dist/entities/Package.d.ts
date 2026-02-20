@@ -18,4 +18,4 @@ export type PackageKey = keyof Package;
 export declare class PackageArray {
     data: Package[];
 }
-export declare const PackageUnion: any;
+export declare const PackageUnion: Package | PackageArray;

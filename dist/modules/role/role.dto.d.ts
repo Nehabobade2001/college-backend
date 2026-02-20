@@ -4,7 +4,7 @@ export declare class CreateRoleDto {
     description?: string;
     permissionIds: number[];
 }
-declare const UpdateRoleDto_base: any;
+declare const UpdateRoleDto_base: import("@nestjs/common").Type<Partial<CreateRoleDto>>;
 export declare class UpdateRoleDto extends UpdateRoleDto_base {
     id: number;
 }

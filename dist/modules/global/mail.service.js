@@ -34,6 +34,25 @@ let MailService = class MailService {
             console.log('Email failed', e);
         });
     }
+    async sendWelcomeWithAttachment(to, user, setting, attachments) {
+        await this.mailerService
+            .sendMail({
+            to,
+            subject: 'Welcome - Account Created',
+            template: 'Welcome.hbs',
+            context: {
+                user,
+                setting,
+            },
+            attachments,
+        })
+            .then(() => {
+            console.log('Email with attachment sent');
+        })
+            .catch((e) => {
+            console.log('Email with attachment failed', e);
+        });
+    }
     async sendMailVerify(code, to, setting, user) {
         await this.mailerService
             .sendMail({

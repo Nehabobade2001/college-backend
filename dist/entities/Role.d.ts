@@ -29,4 +29,4 @@ export type RoleKey = keyof Role;
 export declare class RoleArray {
     data: Role[];
 }
-export declare const RoleUnion: any;
+export declare const RoleUnion: Role | RoleArray;

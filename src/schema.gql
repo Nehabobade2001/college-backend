@@ -163,51 +163,6 @@ type Package {
   deletedAt: DateTime
 }
 
-type Coupon {
-  id: ID!
-  code: String!
-  couponCode: String!
-  discountType: DiscountType!
-  discountValue: Float!
-  status: String!
-  validFrom: DateTime!
-  validTo: DateTime!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
-"""Type of discount"""
-enum DiscountType {
-  PERCENTAGE
-  FIXED
-}
-
-type Plan {
-  id: ID!
-  name: String!
-  description: String
-  price: Float!
-  duration: Float!
-  discountedPrice: Float
-  status: String!
-  package: Package
-  coupon: Coupon
-  couponCode: String
-}
-
-type Offer {
-  id: ID!
-  title: String!
-  description: String
-  offerType: String
-  discountPercent: Float
-  discountValue: Float
-  usageLimit: Float!
-  status: String!
-  startDate: DateTime!
-}
-
 type Query {
   paginatedUsers(ListInputDTO: ListInputDTO!): PaginatedUsers!
   findUserById(id: Float!): User!

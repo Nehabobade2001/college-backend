@@ -78,4 +78,4 @@ export type UserKey = keyof User;
 export declare class UserArray {
     data: User[];
 }
-export declare const UserUnion: any;
+export declare const UserUnion: User | UserArray;

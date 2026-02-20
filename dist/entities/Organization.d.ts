@@ -21,4 +21,4 @@ export type OrganizationKey = keyof Organization;
 export declare class OrganizationArray {
     data: Organization[];
 }
-export declare const OrganizationUnion: any;
+export declare const OrganizationUnion: Organization | OrganizationArray;

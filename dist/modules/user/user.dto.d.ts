@@ -1,3 +1,4 @@
+import { ListInputDTO } from '@/common/paginationDto/withPagination';
 import { CustomStatus } from '@/common/const/CustomStatus';
 import { Designation, UserType } from '@/entities/User';
 export declare class CreateUserDto {
@@ -10,11 +11,11 @@ export declare class CreateUserDto {
     designation: Designation;
     parentId?: number | null;
 }
-declare const UpdateUserDto_base: any;
+declare const UpdateUserDto_base: import("@nestjs/common").Type<Partial<CreateUserDto>>;
 export declare class UpdateUserDto extends UpdateUserDto_base {
     id: number;
 }
-declare const UserListInputDTO_base: any;
+declare const UserListInputDTO_base: import("@nestjs/common").Type<Partial<ListInputDTO>>;
 export declare class UserListInputDTO extends UserListInputDTO_base {
     parentId?: string;
 }

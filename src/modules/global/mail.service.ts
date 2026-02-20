@@ -27,6 +27,32 @@ export class MailService {
       })
   }
 
+  // Send Welcome Email with attachments (e.g., credentials file)
+  async sendWelcomeWithAttachment(
+    to: string,
+    user: object,
+    setting: object,
+    attachments: Array<{ filename: string; content: string | Buffer }>,
+  ): Promise<void> {
+    await this.mailerService
+      .sendMail({
+        to,
+        subject: 'Welcome - Account Created',
+        template: 'Welcome.hbs',
+        context: {
+          user,
+          setting,
+        },
+        attachments,
+      })
+      .then(() => {
+        console.log('Email with attachment sent')
+      })
+      .catch((e) => {
+        console.log('Email with attachment failed', e)
+      })
+  }
+
   // Send Email for registration Process
   async sendMailVerify(
     code: number,

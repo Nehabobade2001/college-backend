@@ -8,6 +8,8 @@ import { RoleModule } from '../role/role.module'
 import { PermissionModule } from '../permission/permission.module'
 import { AboutModule } from '../Frontend/About/about.module'
 
+import { CenterModule } from '../center/center.module'
+
 @Module({
   imports: [
     DatabaseConfig,
@@ -18,6 +20,7 @@ import { AboutModule } from '../Frontend/About/about.module'
     RoleModule,
     PermissionModule,
     AboutModule,
+    CenterModule,
   ],
   controllers: [],
   providers: [],

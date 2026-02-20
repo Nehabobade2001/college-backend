@@ -1,1 +1,0 @@
-{"version":3,"file":"1741247389287-otp.js","sourceRoot":"","sources":["../../../src/database/migrations/1741247389287-otp.ts"],"names":[],"mappings":";;;AAEA,MAAa,gBAAgB;IACpB,KAAK,CAAC,EAAE,CAAC,WAAwB;QAEtC,MAAM,WAAW,CAAC,KAAK,CAAS;;;;;;;;;KAS/B,CAAC,CAAA;IACJ,CAAC;IAEM,KAAK,CAAC,IAAI,CAAC,WAAwB;QAExC,MAAM,WAAW,CAAC,KAAK,CAAS,gBAAgB,CAAC,CAAA;IACnD,CAAC;CACF;AAnBD,4CAmBC"}

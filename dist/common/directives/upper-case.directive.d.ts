@@ -1,2 +1,2 @@
 import { GraphQLSchema } from 'graphql';
-export declare function upperDirectiveTransformer(schema: GraphQLSchema, directiveName: string): any;
+export declare function upperDirectiveTransformer(schema: GraphQLSchema, directiveName: string): GraphQLSchema;

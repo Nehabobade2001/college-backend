@@ -17,4 +17,4 @@ export type ApplicationModuleKey = keyof ApplicationModule;
 export declare class ApplicationModuleArray {
     data: ApplicationModule[];
 }
-export declare const ApplicationModuleUnion: any;
+export declare const ApplicationModuleUnion: ApplicationModule | ApplicationModuleArray;

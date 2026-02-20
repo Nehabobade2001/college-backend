@@ -10,4 +10,4 @@ export declare const getDateTime: (date: string) => Date;
 export declare const formatIndian: (number: number, currency?: boolean) => string;
 export declare const convertToLocalTime: (timestamp: number) => string;
 export declare const isValidExtensions: (ext: any, allowedExtensions: string[]) => boolean;
-export declare function createSmartUnion<TItem, TArray>(name: string, singleType: () => Type<TItem>, arrayType: () => Type<TArray>, arrayKey?: keyof TArray, itemKey?: keyof TItem): any;
+export declare function createSmartUnion<TItem, TArray>(name: string, singleType: () => Type<TItem>, arrayType: () => Type<TArray>, arrayKey?: keyof TArray, itemKey?: keyof TItem): TItem | TArray;

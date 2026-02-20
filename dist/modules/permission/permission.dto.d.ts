@@ -11,7 +11,7 @@ export declare class CreatePermissionDto {
     module: string;
     description: string;
 }
-declare const UpdatePermissionDto_base: any;
+declare const UpdatePermissionDto_base: import("@nestjs/common").Type<Partial<CreatePermissionDto>>;
 export declare class UpdatePermissionDto extends UpdatePermissionDto_base {
     id: number;
 }
