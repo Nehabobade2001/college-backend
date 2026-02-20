@@ -17,6 +17,7 @@ const role_module_1 = require("../role/role.module");
 const permission_module_1 = require("../permission/permission.module");
 const about_module_1 = require("../Frontend/About/about.module");
 const center_module_1 = require("../center/center.module");
+const student_module_1 = require("../student/student.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -32,6 +33,7 @@ exports.AppModule = AppModule = __decorate([
             permission_module_1.PermissionModule,
             about_module_1.AboutModule,
             center_module_1.CenterModule,
+            student_module_1.StudentModule,
         ],
         controllers: [],
         providers: [],

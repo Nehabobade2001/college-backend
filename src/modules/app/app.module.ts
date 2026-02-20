@@ -9,6 +9,7 @@ import { PermissionModule } from '../permission/permission.module'
 import { AboutModule } from '../Frontend/About/about.module'
 
 import { CenterModule } from '../center/center.module'
+import { StudentModule } from '../student/student.module'
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { CenterModule } from '../center/center.module'
     PermissionModule,
     AboutModule,
     CenterModule,
+    StudentModule,
   ],
   controllers: [],
   providers: [],
