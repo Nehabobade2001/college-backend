@@ -1,0 +1,59 @@
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <meta http-equiv='X-UA-Compatible' content='ie=edge' />
+    <title>Welcome to [Application Name]</title>
+    <style>
+      body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin:
+      0; padding: 0; } .email-container { max-width: 600px; margin: 20px auto;
+      background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); } .email-header {
+      background-color: #4CAF50; color: #ffffff; padding: 20px; text-align:
+      center; border-top-left-radius: 8px; border-top-right-radius: 8px; }
+      .email-body { padding: 20px; line-height: 1.6; color: #333333; }
+      .email-body h2 { color: #4CAF50; } .email-footer { padding: 20px;
+      font-size: 12px; color: #777777; text-align: center; background-color:
+      #f1f1f1; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;
+      } a { color: #4CAF50; text-decoration: none; } .button { display:
+      inline-block; background-color: #4CAF50; color: #ffffff; padding: 10px
+      20px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+    </style>
+  </head>
+  <body>
+    <div class='email-container'>
+      <!-- Header -->
+      <div class='email-header'>
+        <h1>Welcome to {{setting.title}}!</h1>
+      </div>
+      <!-- Body -->
+      <div class='email-body'>
+        <h2>Hi {{user.name}},</h2>
+        <p>We’re thrilled to have you join our community! Thank you for signing
+          up for
+          {{setting.title}}. We’re confident you’ll love using our platform.</p>
+        <p>Here are some quick tips to help you get started:</p>
+        <ul>
+          <li>Explore your dashboard to see all the features available to you.</li>
+          <li>Check out our
+            <a href='[Help Center Link]'>Help Center</a>
+            for guides and FAQs.</li>
+          <li>Feel free to reach out to our support team if you need assistance.</li>
+        </ul>
+        <p>Click below to start exploring:</p>
+        <a href='[Dashboard Link]' class='button'>Go to Dashboard</a>
+        <p>We’re here to help you every step of the way. Let’s make great things
+          happen!</p>
+        <p>Best regards,<br />The {{setting.title}} Team</p>
+      </div>
+      <!-- Footer -->
+      <div class='email-footer'>
+        <p>If you have any questions, feel free to reach us at
+          <a
+            href='mailto:{{setting.supportEmail}}'
+          >{{setting.supportEmail}}</a>.</p>
+        <p>{{setting.copyRight}} {{setting.title}}. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>

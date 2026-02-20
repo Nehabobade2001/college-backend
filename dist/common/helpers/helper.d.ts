@@ -1,0 +1,13 @@
+import { Type } from '@nestjs/common';
+export declare const isTempFile: (url: string) => boolean;
+export declare const isUploadFile: (url: string) => boolean;
+export declare const moveFile: (oldPath: string) => Promise<string>;
+export declare const deleteFile: (path: string) => void;
+export declare const isValid: (value: any) => boolean;
+export declare const formatDate: (date: Date, format: string) => string;
+export declare const capitalized: (str: string) => string;
+export declare const getDateTime: (date: string) => Date;
+export declare const formatIndian: (number: number, currency?: boolean) => string;
+export declare const convertToLocalTime: (timestamp: number) => string;
+export declare const isValidExtensions: (ext: any, allowedExtensions: string[]) => boolean;
+export declare function createSmartUnion<TItem, TArray>(name: string, singleType: () => Type<TItem>, arrayType: () => Type<TArray>, arrayKey?: keyof TArray, itemKey?: keyof TItem): any;

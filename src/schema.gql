@@ -1,0 +1,358 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+directive @upper on FIELD_DEFINITION
+
+type Meta {
+  totalItems: Int!
+  totalPages: Int!
+  currentPage: Int!
+  limit: Int!
+}
+
+type Permissions {
+  id: ID!
+  appName: String!
+  groupName: String!
+  module: String!
+  action: String!
+  slug: String!
+  description: String!
+}
+
+type PaginatedPermissions {
+  meta: Meta!
+  data: [Permissions!]!
+}
+
+type Organization {
+  id: ID!
+  name: String!
+  description: String
+  status: String!
+}
+
+type User {
+  id: ID!
+  name: String!
+  username: String
+  mobileNo: Float
+  email: String!
+  status: String!
+  avatar: String
+  parentId: Float
+  organizationId: Float
+  userType: UserType!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  roles: [Role!]
+  designation: Designation
+  parent: User
+  subordinates: [User!]
+}
+
+"""User Type Status"""
+enum UserType {
+  admin
+  adminEmployee
+  organization
+  organizationEmployee
+  thirdParty
+  thirdPartyEmployee
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+"""User Designation Hierarchy"""
+enum Designation {
+  SUPER_ADMIN
+  CEO
+  CTO
+  HR
+  MANAGER
+  TEAM_LEAD
+  EMPLOYEE
+}
+
+type PaginatedUsers {
+  meta: Meta!
+  data: [User!]!
+}
+
+type Role {
+  id: ID!
+  name: String!
+  permissions: [Permissions!]!
+  description: String
+  roleType: String
+  status: String!
+  permissionCount: Float!
+  organization: Organization
+}
+
+type PaginatedRoles {
+  meta: Meta!
+  data: [Role!]!
+}
+
+type PermissionGroup {
+  modules: [Module!]!
+}
+
+type Module {
+  name: String!
+  groups: [Group!]!
+}
+
+type Group {
+  name: String!
+  permissions: [Permissions!]!
+}
+
+type PermissionDto {
+  id: Float!
+  module: String!
+  action: String!
+  description: String!
+  slug: String!
+}
+
+type PermissionGroupDto {
+  name: String!
+  permissions: [PermissionDto!]!
+}
+
+type AppPermissionsDto {
+  appName: String!
+  modules: [PermissionGroupDto!]!
+}
+
+type DynamicPermissionsDto {
+  apps: [AppPermissionsDto!]!
+}
+
+type About {
+  id: ID!
+  title: String!
+  description: String
+  imageUrl: String
+  content: String
+}
+
+type ApplicationModule {
+  id: ID!
+  name: String!
+  description: String
+  status: String!
+}
+
+type Package {
+  id: ID!
+  name: String!
+  description: String
+  price: Float!
+  status: String!
+  modules: [ApplicationModule!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type Coupon {
+  id: ID!
+  code: String!
+  couponCode: String!
+  discountType: DiscountType!
+  discountValue: Float!
+  status: String!
+  validFrom: DateTime!
+  validTo: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+"""Type of discount"""
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+type Plan {
+  id: ID!
+  name: String!
+  description: String
+  price: Float!
+  duration: Float!
+  discountedPrice: Float
+  status: String!
+  package: Package
+  coupon: Coupon
+  couponCode: String
+}
+
+type Offer {
+  id: ID!
+  title: String!
+  description: String
+  offerType: String
+  discountPercent: Float
+  discountValue: Float
+  usageLimit: Float!
+  status: String!
+  startDate: DateTime!
+}
+
+type Query {
+  paginatedUsers(ListInputDTO: ListInputDTO!): PaginatedUsers!
+  findUserById(id: Float!): User!
+  findPermissionsByUser(id: Float!): [String!]!
+  trashedUsers(ListInputDTO: ListInputDTO!): PaginatedUsers!
+  userHierarchy(parentId: Int, nameFilter: String): [User!]!
+  paginatedRoles(ListInputDTO: ListInputDTO!): PaginatedRoles!
+  findRoleById(id: Float!): Role!
+  listTrashedRoles(ListInputDTO: ListInputDTO!): PaginatedRoles!
+  allPermissions: DynamicPermissionsDto!
+  paginatedPermissions(ListInputDTO: ListInputDTO!): PaginatedPermissions!
+  findPermissionById(id: Float!): Permissions!
+  permissionGroup: PermissionGroup!
+  getAllAbout: [About!]!
+  getAboutById: About!
+}
+
+input ListInputDTO {
+  page: Float
+  limit: Float
+  sortBy: [[String!]!]
+  search: String
+  filter: JSON
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+type Mutation {
+  createUser(data: CreateUserDto!): User!
+  updateUser(data: UpdateUserDto!): User!
+  deleteUser(ids: [Int!]!): Boolean!
+  assignRoleToUser(userId: Int!, roleIds: [Int!]!): User!
+  changePassword(changePasswordData: ChangePasswordDto!): Boolean!
+  updateProfile(data: UpdateUserDto!): User!
+  restoreUser(ids: [Int!]!): Boolean!
+  hardDeleteUser(ids: [Int!]!): Boolean!
+  changeUserStatus(data: UserStatusDto!): UserUnion!
+  createRole(data: CreateRoleDto!): Role!
+  updateRole(data: UpdateRoleDto!): Role!
+  deleteRole(ids: [Int!]!): Boolean!
+  hardDeleteRole(ids: [Int!]!): Boolean!
+  assignPermissionsToRole(roleId: Int!, permissionIds: [Int!]!): Role!
+  restoreRole(ids: [Int!]!): Boolean!
+  changeRoleStatus(data: RoleStatusDto!): RoleUnion!
+  createPermission(data: CreatePermissionDto!): Permissions!
+  updatePermission(data: UpdatePermissionDto!): Permissions!
+  deletePermission(id: Float!): Boolean!
+  createAbout: About!
+  updateAbout: About!
+  deleteAbout: Boolean!
+}
+
+input CreateUserDto {
+  name: String!
+  email: String!
+  mobileNo: Float!
+  roleIds: [Int!]!
+  avatar: String
+  userType: UserType
+  designation: Designation!
+  parentId: Float
+}
+
+input UpdateUserDto {
+  name: String
+  email: String
+  mobileNo: Float
+  roleIds: [Int!]
+  avatar: String
+  userType: UserType
+  designation: Designation
+  parentId: Float
+  id: Int!
+}
+
+input ChangePasswordDto {
+  currentPassword: String!
+  newPassword: String!
+  email: String!
+}
+
+union UserUnion = User | UserArray
+
+type UserArray {
+  data: [User!]!
+}
+
+input UserStatusDto {
+  ids: [Float!]!
+  status: CustomStatus!
+}
+
+"""Custom status for entities"""
+enum CustomStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+  PENDING
+}
+
+input CreateRoleDto {
+  name: String!
+  description: String
+  permissionIds: [Float!]!
+}
+
+input UpdateRoleDto {
+  name: String
+  description: String
+  permissionIds: [Float!]
+  id: Float!
+}
+
+union RoleUnion = Role | RoleArray
+
+type RoleArray {
+  data: [Role!]!
+}
+
+input RoleStatusDto {
+  ids: [Float!]!
+  status: CustomStatus!
+}
+
+input CreatePermissionDto {
+  appName: appName!
+  action: String!
+  module: String!
+  description: String!
+}
+
+enum appName {
+  MasterApp
+  TaskManagement
+  MaterialManagement
+  VehicleManagement
+}
+
+input UpdatePermissionDto {
+  appName: appName
+  action: String
+  module: String
+  description: String
+  id: Float!
+}
