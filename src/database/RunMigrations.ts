@@ -7,12 +7,14 @@ import * as seeders from '@/database/seeders/index' // Import all seeders
 
 async function RunMigrations() {
   const dataSource: DataSource = AppDataSource
+  let isConnected = false
 
   try {
     const shouldSeed = process.argv.includes('--seed')
 
     // Initialize the connection
     await dataSource.initialize()
+    isConnected = true
 
     Logger.log('Database connected successfully...', 'Migration')
 
@@ -40,33 +42,27 @@ async function RunMigrations() {
       await seed(dataSource)
     }
   } catch (error) {
-    // console.log(error.stack)
-
     Logger.error('Error running migrations:', error?.stack, 'Migration')
+    process.exit(1)
   } finally {
-    // Close the connection
-    await dataSource.destroy()
+    // Close the connection only if it was established
+    if (isConnected) {
+      await dataSource.destroy()
+    }
   }
 }
 
-const seed = async (AppDataSource: DataSource) => {
+const seed = async (dataSource: DataSource) => {
   try {
-    // log seed length
     Logger.log(`Running ${Object.keys(seeders).length} seeders...`, 'Seeder')
 
-    // Run all seeders
     for (const seeder of Object.values(seeders)) {
-      await seeder(AppDataSource)
-
-      // Log the successful seeder
+      await seeder(dataSource)
       Logger.log(`${seeder.name} executed successfully.`, 'Seeder')
     }
 
-    // Log the successful seed
     Logger.log('Seeders executed successfully.', 'Seeder')
   } catch (error) {
-    // console.log(error.stack)
-
     Logger.error('Error running seeders:', error?.stack, 'Seeder')
   }
 }
