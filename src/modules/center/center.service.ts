@@ -3,7 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Center } from '../../entities/Center';
 import { CreateCenterDto, UpdateCenterDto } from './center.dto';
-import { User } from '@/entities/User';
+import { User, UserType } from '@/entities/User';
+import { Organization } from '@/entities/Organization';
 import { Role } from '@/entities/Role';
 import { UserRole } from '@/entities/UserRole';
 import { MailService } from '@/modules/global/mail.service';
@@ -28,7 +29,23 @@ export class CenterService {
   }
 
   async create(dto: CreateCenterDto, authUser?: any) {
-    const center = this.centerRepo.create(dto);
+    const centerPayload: Partial<Center> = {
+      franchiseName: (dto as any).franchiseName ?? (dto as any).name,
+      ownerName: (dto as any).ownerName,
+      email: dto.email,
+      contactNumber: (dto as any).contactNumber ?? (dto as any).phone,
+      alternateNumber: (dto as any).alternateNumber,
+      address: dto.address,
+      city: dto.city,
+      state: dto.state,
+      pincode: dto.pincode,
+      registrationNumber: dto.registrationNumber,
+      gstNumber: dto.gstNumber,
+      agreementStartDate: dto.agreementStartDate ? new Date(dto.agreementStartDate) : null,
+      agreementEndDate: dto.agreementEndDate ? new Date(dto.agreementEndDate) : null,
+    };
+
+    const center = this.centerRepo.create(centerPayload as any);
     const savedCenter = await this.centerRepo.save(center);
 
     // If an email was provided for the center, create a user account and send credentials
@@ -48,63 +65,80 @@ export class CenterService {
           passwordToUse = randomBytes(6).toString('hex');
         }
 
-        const orgId = authUser?.organizationId;
+        let orgId = authUser?.organizationId;
+
+        // If no organizationId on the auth user, create a dedicated Organization for this franchise
         if (!orgId) {
-          this.logger.warn('No organizationId found on authUser — skipping center user creation to avoid FK constraint.');
+          try {
+            const orgRepo = this.centerRepo.manager.getRepository(Organization) as Repository<Organization>;
+            const orgPayload = { name: centerPayload.franchiseName ?? 'Franchise', status: 'active' } as any;
+            const createdOrg = orgRepo.create(orgPayload);
+            const savedOrg = (await orgRepo.save(createdOrg)) as unknown as Organization;
+            orgId = savedOrg.id;
+            this.logger.log(`Created organization ${orgId} for franchise user`);
+          } catch (e) {
+            this.logger.warn('Failed to create Organization for franchise user — skipping user creation', e);
+            orgId = null;
+          }
+        }
+
+        if (!orgId) {
+          this.logger.warn('No organizationId available — skipping center user creation.');
         } else {
           const newUser = userRepo.create({
-            name: dto.name,
+            name: centerPayload.franchiseName ?? 'Franchise',
             email: dto.email,
             password: passwordToUse,
             status: 'active',
             organizationId: orgId,
+            userType: UserType.franchise,
           } as any);
 
           const savedUser = (await userRepo.save(newUser) as unknown) as User;
 
-        // ensure a 'Franchise' role exists for the organization and assign it to the user
-        try {
-          const roleRepo = this.centerRepo.manager.getRepository(Role) as Repository<Role>;
-          let franchiseRole = (await roleRepo.findOne({ where: { name: 'Franchise', organizationId: savedUser.organizationId } })) as Role | null;
-          if (!franchiseRole) {
-            franchiseRole = (roleRepo.create({
-              name: 'Franchise',
-              organizationId: savedUser.organizationId,
-              description: 'Franchise Role',
-              isPrimary: false,
-              roleType: 'franchise',
-              status: 'active',
-              permissionCount: 0,
-            } as any) as unknown) as Role;
-            franchiseRole = await roleRepo.save(franchiseRole);
+          // ensure a 'Franchise' role exists for the organization and assign it to the user
+          try {
+            const roleRepo = this.centerRepo.manager.getRepository(Role) as Repository<Role>;
+            let franchiseRole = (await roleRepo.findOne({ where: { name: 'Franchise', organizationId: savedUser.organizationId } })) as Role | null;
+            if (!franchiseRole) {
+              franchiseRole = (roleRepo.create({
+                name: 'Franchise',
+                organizationId: savedUser.organizationId,
+                description: 'Franchise Role',
+                isPrimary: false,
+                roleType: 'franchise',
+                status: 'active',
+                permissionCount: 0,
+              } as any) as unknown) as Role;
+              franchiseRole = await roleRepo.save(franchiseRole);
+            }
+
+            const userRoleRepo = this.centerRepo.manager.getRepository(UserRole) as Repository<UserRole>;
+            const userRole = userRoleRepo.create({ roleId: (franchiseRole as Role).id, userId: savedUser.id } as any);
+            await userRoleRepo.save(userRole);
+          } catch (e) {
+            this.logger.warn('Failed to assign Franchise role to center user', e);
           }
 
-          const userRoleRepo = this.centerRepo.manager.getRepository(UserRole) as Repository<UserRole>;
-          const userRole = userRoleRepo.create({ roleId: (franchiseRole as Role).id, userId: savedUser.id } as any);
-          await userRoleRepo.save(userRole);
-        } catch (e) {
-          this.logger.warn('Failed to assign Franchise role to center user', e);
-        }
-
           // send welcome email with credentials file attachment (best-effort)
-        try {
-          const fileContent = `Login credentials\nEmail: ${dto.email}\nPassword: ${passwordToUse}\nPlease change your password after first login.`
-          const attachments = [
-            {
-              filename: 'credentials.txt',
-              content: fileContent,
-            },
-          ];
+          try {
+            const fileContent = `Login credentials\nEmail: ${dto.email}\nPassword: ${passwordToUse}\nPlease change your password after first login.`
+            const attachments = [
+              {
+                filename: 'credentials.txt',
+                content: fileContent,
+              },
+            ];
 
-          await this.mailService.sendWelcomeWithAttachment(
-            dto.email,
-            { name: dto.name, email: dto.email },
-            {},
-            attachments,
-          );
-        } catch (e) {
-          this.logger.warn('Failed to send credentials attachment for center user', e);
-        }
+            await this.mailService.sendWelcomeWithAttachment(
+              dto.email,
+              { name: centerPayload.franchiseName, email: dto.email },
+              {},
+              attachments,
+            );
+          } catch (e) {
+            this.logger.warn('Failed to send credentials attachment for center user', e);
+          }
         }
       }
     } catch (err) {
@@ -115,7 +149,24 @@ export class CenterService {
   }
 
   async update(id: number, dto: UpdateCenterDto) {
-    await this.centerRepo.update(id, dto);
+    const updatePayload: Partial<Center> = {
+      franchiseName: (dto as any).franchiseName ?? (dto as any).name,
+      ownerName: (dto as any).ownerName,
+      email: (dto as any).email,
+      contactNumber: (dto as any).contactNumber ?? (dto as any).phone,
+      alternateNumber: (dto as any).alternateNumber,
+      address: (dto as any).address,
+      city: (dto as any).city,
+      state: (dto as any).state,
+      pincode: (dto as any).pincode,
+      registrationNumber: (dto as any).registrationNumber,
+      gstNumber: (dto as any).gstNumber,
+      agreementStartDate: dto.agreementStartDate ? new Date(dto.agreementStartDate) : undefined,
+      agreementEndDate: dto.agreementEndDate ? new Date(dto.agreementEndDate) : undefined,
+      isActive: (dto as any).isActive,
+    };
+
+    await this.centerRepo.update(id, updatePayload as any);
     return this.findOne(id);
   }
 

@@ -9,7 +9,15 @@ import { PermissionModule } from '../permission/permission.module'
 import { AboutModule } from '../Frontend/About/about.module'
 
 import { CenterModule } from '../center/center.module'
+import { CategoryModule } from '../category/category.module'
+import { DepartmentModule } from '../department/department.module'
 import { StudentModule } from '../student/student.module'
+import { ProgramModule } from '../program/program.module'
+import { StreamModule } from '../stream/stream.module'
+import { SubjectModule } from '../subject/subject.module'
+import { SpecializationModule } from '../specialization/specialization.module'
+import { AddressModule } from '../address/address.module'
+
 
 @Module({
   imports: [
@@ -21,6 +29,13 @@ import { StudentModule } from '../student/student.module'
     RoleModule,
     PermissionModule,
     AboutModule,
+    CategoryModule,
+    DepartmentModule,
+    ProgramModule,
+    StreamModule,
+    SubjectModule,
+    SpecializationModule,
+    AddressModule,
     CenterModule,
     StudentModule,
   ],

@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm'
 export class CreateOtpTable1740242603000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(/* sql */ `
-      CREATE TABLE otp (
+      CREATE TABLE IF NOT EXISTS otp (
         id INT AUTO_INCREMENT PRIMARY KEY,
         email VARCHAR(255) NOT NULL,
         otp VARCHAR(10) NOT NULL,

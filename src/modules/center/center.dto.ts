@@ -2,8 +2,8 @@ import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, MinLength } from '
 
 export class CreateCenterDto {
   @IsString()
-  @IsNotEmpty()
-  name: string
+  @IsOptional()
+  name?: string
 
   @IsString()
   @IsOptional()
@@ -34,6 +34,51 @@ export class CreateCenterDto {
   @IsString()
   @IsOptional()
   notes?: string
+
+  // Franchise fields
+  @IsString()
+  @IsOptional()
+  franchiseName?: string
+
+  @IsString()
+  @IsOptional()
+  ownerName?: string
+
+  @IsString()
+  @IsOptional()
+  contactNumber?: string
+
+  @IsString()
+  @IsOptional()
+  alternateNumber?: string
+
+  @IsString()
+  @IsOptional()
+  city?: string
+
+  @IsString()
+  @IsOptional()
+  state?: string
+
+  @IsString()
+  @IsOptional()
+  pincode?: string
+
+  @IsString()
+  @IsOptional()
+  registrationNumber?: string
+
+  @IsString()
+  @IsOptional()
+  gstNumber?: string
+
+  @IsString()
+  @IsOptional()
+  agreementStartDate?: string
+
+  @IsString()
+  @IsOptional()
+  agreementEndDate?: string
 }
 
 export class UpdateCenterDto {
@@ -64,6 +109,50 @@ export class UpdateCenterDto {
   @IsString()
   @IsOptional()
   notes?: string
+
+  @IsString()
+  @IsOptional()
+  franchiseName?: string
+
+  @IsString()
+  @IsOptional()
+  ownerName?: string
+
+  @IsString()
+  @IsOptional()
+  contactNumber?: string
+
+  @IsString()
+  @IsOptional()
+  alternateNumber?: string
+
+  @IsString()
+  @IsOptional()
+  city?: string
+
+  @IsString()
+  @IsOptional()
+  state?: string
+
+  @IsString()
+  @IsOptional()
+  pincode?: string
+
+  @IsString()
+  @IsOptional()
+  registrationNumber?: string
+
+  @IsString()
+  @IsOptional()
+  gstNumber?: string
+
+  @IsString()
+  @IsOptional()
+  agreementStartDate?: string
+
+  @IsString()
+  @IsOptional()
+  agreementEndDate?: string
 
   @IsOptional()
   isActive?: boolean

@@ -5,17 +5,29 @@ export class Student {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar' })
-  name: string;
+  @Column({ type: 'varchar', nullable: true })
+  firstName?: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  lastName?: string | null;
 
   @Column({ type: 'varchar', unique: true, nullable: true })
   email: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  mobileNumber?: string | null;
 
   @Column({ type: 'varchar', nullable: true, select: false })
   password?: string | null;
 
   @Column({ type: 'boolean', default: false })
   isMe: boolean;
+
+  @Column({ type: 'varchar', nullable: true })
+  gender?: string | null;
+
+  @Column({ type: 'date', nullable: true })
+  dateOfBirth?: Date | null;
 
   @Column({ type: 'int', nullable: true })
   organizationId?: number | null;
@@ -34,6 +46,48 @@ export class Student {
 
   @Column({ type: 'varchar', nullable: true })
   documentUrl?: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  address?: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  city?: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  state?: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  pincode?: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  enrollmentNumber?: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  courseName?: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  branch?: string | null;
+
+  @Column({ type: 'int', nullable: true })
+  semester?: number | null;
+
+  @Column({ type: 'date', nullable: true })
+  admissionDate?: Date | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  sessionYear?: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  profilePhoto?: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  aadhaarNumber?: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  previousMarksheet?: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  category?: string | null;
 
   @CreateDateColumn()
   createdAt: Date;

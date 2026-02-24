@@ -35,6 +35,7 @@ export enum UserType {
   adminEmployee = 'adminEmployee',
   organization = 'organization',
   organizationEmployee = 'organizationEmployee',
+  franchise = 'franchise',
   thirdParty = 'thirdParty',
   thirdPartyEmployee = 'thirdPartyEmployee',
 }

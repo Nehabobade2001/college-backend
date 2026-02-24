@@ -5,24 +5,43 @@ export class Center {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
-  name: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  franchiseName?: string | null;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  address: string;
+  ownerName?: string | null;
 
-  @Column({ type: 'int', nullable: true })
-  managerId?: number;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  email?: string | null;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  phone?: string;
+  contactNumber?: string | null;
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  alternateNumber?: string | null;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  email?: string;
+  address?: string | null;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  city?: string | null;
 
-  @Column({ type: 'text', nullable: true })
-  notes?: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  state?: string | null;
 
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  pincode?: string | null;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  registrationNumber?: string | null;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  gstNumber?: string | null;
+
+  @Column({ type: 'date', nullable: true })
+  agreementStartDate?: Date | null;
+
+  @Column({ type: 'date', nullable: true })
+  agreementEndDate?: Date | null;
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
 
@@ -32,3 +51,4 @@ export class Center {
   @UpdateDateColumn()
   updatedAt: Date;
 }
+ 

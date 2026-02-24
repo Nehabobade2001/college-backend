@@ -59,6 +59,7 @@ enum UserType {
   adminEmployee
   organization
   organizationEmployee
+  franchise
   thirdParty
   thirdPartyEmployee
 }

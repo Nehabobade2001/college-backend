@@ -1,8 +1,41 @@
 import { IsString, IsEmail, IsOptional, IsBoolean, IsNumber } from 'class-validator';
 
 export class CreateStudentDto {
+  @IsOptional()
   @IsString()
-  name: string;
+  firstName?: string;
+
+  @IsOptional()
+  @IsString()
+  lastName?: string;
+
+  @IsOptional()
+  @IsString()
+  gender?: string;
+
+  @IsOptional()
+  @IsString()
+  dateOfBirth?: string;
+
+  @IsOptional()
+  @IsString()
+  mobileNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  @IsOptional()
+  @IsString()
+  city?: string;
+
+  @IsOptional()
+  @IsString()
+  state?: string;
+
+  @IsOptional()
+  @IsString()
+  pincode?: string;
 
   @IsOptional()
   @IsEmail()
@@ -27,6 +60,48 @@ export class CreateStudentDto {
   @IsOptional()
   @IsString()
   documentUrl?: string;
+
+  // Academic
+  @IsOptional()
+  @IsString()
+  enrollmentNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  courseName?: string;
+
+  @IsOptional()
+  @IsString()
+  branch?: string;
+
+  @IsOptional()
+  @IsNumber()
+  semester?: number;
+
+  @IsOptional()
+  @IsString()
+  admissionDate?: string;
+
+  @IsOptional()
+  @IsString()
+  sessionYear?: string;
+
+  // Documents
+  @IsOptional()
+  @IsString()
+  profilePhoto?: string;
+
+  @IsOptional()
+  @IsString()
+  aadhaarNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  previousMarksheet?: string;
+
+  @IsOptional()
+  @IsString()
+  category?: string;
 
   @IsOptional()
   @IsBoolean()
@@ -44,7 +119,39 @@ export class CreateStudentDto {
 export class UpdateStudentDto {
   @IsOptional()
   @IsString()
-  name?: string;
+  firstName?: string;
+
+  @IsOptional()
+  @IsString()
+  lastName?: string;
+
+  @IsOptional()
+  @IsString()
+  gender?: string;
+
+  @IsOptional()
+  @IsString()
+  dateOfBirth?: string;
+
+  @IsOptional()
+  @IsString()
+  mobileNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  @IsOptional()
+  @IsString()
+  city?: string;
+
+  @IsOptional()
+  @IsString()
+  state?: string;
+
+  @IsOptional()
+  @IsString()
+  pincode?: string;
 
   @IsOptional()
   @IsEmail()
@@ -69,6 +176,46 @@ export class UpdateStudentDto {
   @IsOptional()
   @IsString()
   documentUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  enrollmentNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  courseName?: string;
+
+  @IsOptional()
+  @IsString()
+  branch?: string;
+
+  @IsOptional()
+  @IsNumber()
+  semester?: number;
+
+  @IsOptional()
+  @IsString()
+  admissionDate?: string;
+
+  @IsOptional()
+  @IsString()
+  sessionYear?: string;
+
+  @IsOptional()
+  @IsString()
+  profilePhoto?: string;
+
+  @IsOptional()
+  @IsString()
+  aadhaarNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  previousMarksheet?: string;
+
+  @IsOptional()
+  @IsString()
+  category?: string;
 
   @IsOptional()
   @IsBoolean()

@@ -51,7 +51,7 @@ export class StudentService {
           this.logger.warn('No organizationId found — skipping user creation to avoid FK constraint.');
         } else {
           const newUser = userRepo.create({
-            name: dto.name,
+            name: `${(dto as any).firstName || ''} ${(dto as any).lastName || ''}`.trim(),
             email: dto.email,
             password: passwordToUse,
             status: 'active',
@@ -96,7 +96,7 @@ export class StudentService {
 
             await this.mailService.sendWelcomeWithAttachment(
               dto.email,
-              { name: dto.name, email: dto.email },
+              { name: `${(dto as any).firstName || ''} ${(dto as any).lastName || ''}`.trim(), email: dto.email },
               {},
               attachments,
             );
