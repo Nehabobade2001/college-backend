@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+/* eslint-disable prettier/prettier */
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -52,7 +54,7 @@ export class CenterService {
     try {
       if (dto.email) {
         // get user repository via manager to avoid circular issues
-        const userRepo: Repository<User> = this.centerRepo.manager.getRepository(User) as Repository<User>;
+        const userRepo: Repository<User> = this.centerRepo.manager.getRepository(User);
 
         // determine password: admin-provided or generated
         let passwordToUse: string;
@@ -70,7 +72,7 @@ export class CenterService {
         // If no organizationId on the auth user, create a dedicated Organization for this franchise
         if (!orgId) {
           try {
-            const orgRepo = this.centerRepo.manager.getRepository(Organization) as Repository<Organization>;
+            const orgRepo = this.centerRepo.manager.getRepository(Organization);
             const orgPayload = { name: centerPayload.franchiseName ?? 'Franchise', status: 'active' } as any;
             const createdOrg = orgRepo.create(orgPayload);
             const savedOrg = (await orgRepo.save(createdOrg)) as unknown as Organization;
@@ -98,7 +100,7 @@ export class CenterService {
 
           // ensure a 'Franchise' role exists for the organization and assign it to the user
           try {
-            const roleRepo = this.centerRepo.manager.getRepository(Role) as Repository<Role>;
+            const roleRepo = this.centerRepo.manager.getRepository(Role);
             let franchiseRole = (await roleRepo.findOne({ where: { name: 'Franchise', organizationId: savedUser.organizationId } })) as Role | null;
             if (!franchiseRole) {
               franchiseRole = (roleRepo.create({
@@ -113,7 +115,7 @@ export class CenterService {
               franchiseRole = await roleRepo.save(franchiseRole);
             }
 
-            const userRoleRepo = this.centerRepo.manager.getRepository(UserRole) as Repository<UserRole>;
+            const userRoleRepo = this.centerRepo.manager.getRepository(UserRole);
             const userRole = userRoleRepo.create({ roleId: (franchiseRole as Role).id, userId: savedUser.id } as any);
             await userRoleRepo.save(userRole);
           } catch (e) {
