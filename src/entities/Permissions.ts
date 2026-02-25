@@ -61,6 +61,22 @@ export class Permissions {
   })
   description: string
 
+  @Field({ nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 10,
+    nullable: true,
+  })
+  httpMethod: string | null
+
+  @Field({ nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  route: string | null
+
   @ManyToMany(() => Role, (role) => role.permissions)
   roles: Role[]
 

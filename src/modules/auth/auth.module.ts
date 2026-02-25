@@ -4,13 +4,14 @@ import { UsersModule } from '../user/users.module'
 import { AuthService } from './auth.service'
 import { AuthController } from './auth.controller'
 import { RolesGuard } from '@/common/auth/roles.guard'
+import { JwtStrategy } from '@/common/auth/jwt.strategy'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { User } from '@/entities/User'
 
 @Module({
   imports: [UsersModule, PassportConfigModule, TypeOrmModule.forFeature([User])],
   controllers: [AuthController],
-  providers: [AuthService, PassportConfigModule, RolesGuard],
+  providers: [AuthService, PassportConfigModule, RolesGuard, JwtStrategy],
   exports: [RolesGuard],
 })
 export class AuthModule { }

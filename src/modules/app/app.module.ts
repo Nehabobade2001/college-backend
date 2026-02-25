@@ -17,6 +17,9 @@ import { StreamModule } from '../stream/stream.module'
 import { SubjectModule } from '../subject/subject.module'
 import { SpecializationModule } from '../specialization/specialization.module'
 import { AddressModule } from '../address/address.module'
+import { FeesModule } from '../fees/fees.module'
+import { CourseModule } from '../course/course.module'
+import { ResultModule } from '../result/result.module'
 
 
 @Module({
@@ -36,6 +39,9 @@ import { AddressModule } from '../address/address.module'
     SubjectModule,
     SpecializationModule,
     AddressModule,
+    FeesModule,
+    CourseModule,
+    ResultModule,
     CenterModule,
     StudentModule,
   ],

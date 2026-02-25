@@ -58,7 +58,7 @@ export class PermissionResolver {
   async createPermission(
     @Args('data') data: CreatePermissionDto,
   ): Promise<Permissions> {
-    return await this.permissionService.create(data)
+    return await this.permissionService.create(data as any)
   }
 
   // Find a permission by ID
@@ -72,7 +72,7 @@ export class PermissionResolver {
   async updatePermission(
     @Args('data') data: UpdatePermissionDto,
   ): Promise<Permissions> {
-    return await this.permissionService.update(data.id, data)
+    return await this.permissionService.update(data.id, data as any)
   }
 
   // Delete a permission

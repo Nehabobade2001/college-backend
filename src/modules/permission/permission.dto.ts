@@ -6,7 +6,7 @@ import {
   PartialType,
   registerEnumType,
 } from '@nestjs/graphql'
-import { IsInt, IsString } from 'class-validator'
+import { IsInt, IsOptional, IsString } from 'class-validator'
 
 export enum appName {
   'MasterApp',
@@ -35,6 +35,16 @@ export class CreatePermissionDto {
   @Field()
   @IsString()
   description: string
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  httpMethod?: string | null
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  route?: string | null
 }
 
 @InputType()

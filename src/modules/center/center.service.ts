@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-/* eslint-disable prettier/prettier */
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -20,7 +18,7 @@ export class CenterService {
     @InjectRepository(Center)
     private readonly centerRepo: Repository<Center>,
     private readonly mailService: MailService,
-  ) {}
+  ) { }
 
   async findAll() {
     return this.centerRepo.find();
@@ -54,7 +52,7 @@ export class CenterService {
     try {
       if (dto.email) {
         // get user repository via manager to avoid circular issues
-        const userRepo: Repository<User> = this.centerRepo.manager.getRepository(User);
+        const userRepo: Repository<User> = this.centerRepo.manager.getRepository(User) as Repository<User>;
 
         // determine password: admin-provided or generated
         let passwordToUse: string;
@@ -72,7 +70,7 @@ export class CenterService {
         // If no organizationId on the auth user, create a dedicated Organization for this franchise
         if (!orgId) {
           try {
-            const orgRepo = this.centerRepo.manager.getRepository(Organization);
+            const orgRepo = this.centerRepo.manager.getRepository(Organization) as Repository<Organization>;
             const orgPayload = { name: centerPayload.franchiseName ?? 'Franchise', status: 'active' } as any;
             const createdOrg = orgRepo.create(orgPayload);
             const savedOrg = (await orgRepo.save(createdOrg)) as unknown as Organization;
@@ -100,9 +98,24 @@ export class CenterService {
 
           // ensure a 'Franchise' role exists for the organization and assign it to the user
           try {
-            const roleRepo = this.centerRepo.manager.getRepository(Role);
-            let franchiseRole = (await roleRepo.findOne({ where: { name: 'Franchise', organizationId: savedUser.organizationId } })) as Role | null;
+            const roleRepo = this.centerRepo.manager.getRepository(Role) as Repository<Role>;
+
+            // 1. Try to find an existing 'Franchise' role for THIS organization
+            let franchiseRole = (await roleRepo.findOne({
+              where: { name: 'Franchise', organizationId: savedUser.organizationId },
+            })) as Role | null;
+
+            // 2. If not found for this org, try finding any global Franchise role (shared across orgs)
             if (!franchiseRole) {
+              franchiseRole = (await roleRepo.findOne({
+                where: { name: 'Franchise' },
+                order: { id: 'ASC' }, // pick the oldest/canonical one
+              })) as Role | null;
+            }
+
+            // 3. Only create a brand-new role if absolutely none exists
+            if (!franchiseRole) {
+              this.logger.log('No Franchise role found globally — creating one');
               franchiseRole = (roleRepo.create({
                 name: 'Franchise',
                 organizationId: savedUser.organizationId,
@@ -115,7 +128,7 @@ export class CenterService {
               franchiseRole = await roleRepo.save(franchiseRole);
             }
 
-            const userRoleRepo = this.centerRepo.manager.getRepository(UserRole);
+            const userRoleRepo = this.centerRepo.manager.getRepository(UserRole) as Repository<UserRole>;
             const userRole = userRoleRepo.create({ roleId: (franchiseRole as Role).id, userId: savedUser.id } as any);
             await userRoleRepo.save(userRole);
           } catch (e) {

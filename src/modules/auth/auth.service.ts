@@ -440,7 +440,7 @@ export class AuthService {
       } else {
         // Commit the transaction
         await queryRunner.commitTransaction()
-        
+
         return {
           otpGeneratedSuccessfully: false,
           otp: null,
@@ -550,7 +550,17 @@ export class AuthService {
       await this.otpService.deleteOtp(validateDto, manager)
 
       const allPermissions = user.roles.reduce((acc, role) => {
-        return [...acc, ...role.permissions.map((p) => p.slug)]
+        return [
+          ...acc,
+          ...role.permissions.map((p) => ({
+            id: p.id,
+            slug: p.slug,
+            route: p.route ?? null,
+            httpMethod: p.httpMethod ?? null,
+            module: p.module ?? null,
+            action: p.action ?? null,
+          })),
+        ]
       }, [])
 
       user.permissions = allPermissions

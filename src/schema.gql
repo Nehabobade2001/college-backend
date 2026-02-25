@@ -19,6 +19,8 @@ type Permissions {
   action: String!
   slug: String!
   description: String!
+  httpMethod: String
+  route: String
 }
 
 type PaginatedPermissions {
@@ -296,6 +298,8 @@ input CreatePermissionDto {
   action: String!
   module: String!
   description: String!
+  httpMethod: String
+  route: String
 }
 
 enum appName {
@@ -310,5 +314,7 @@ input UpdatePermissionDto {
   action: String
   module: String
   description: String
+  httpMethod: String
+  route: String
   id: Float!
 }

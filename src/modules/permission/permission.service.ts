@@ -8,11 +8,8 @@ import { InjectRepository } from '@nestjs/typeorm'
 import slugify from 'slugify'
 import { Repository } from 'typeorm'
 import {
-  appName,
-  CreatePermissionDto,
   DynamicPermissionsDto,
   PermissionGroupDto,
-  UpdatePermissionDto,
 } from './permission.dto'
 import {
   FilterOperator,
@@ -21,17 +18,28 @@ import {
   PaginateQuery,
 } from 'nestjs-paginate'
 
+// Plain input interface — avoids GraphQL enum type confusion for REST calls
+interface PermissionInput {
+  appName?: string
+  module?: string
+  action?: string
+  description?: string
+  groupName?: string
+  httpMethod?: string | null
+  route?: string | null
+}
+
 @Injectable()
 export class PermissionService {
   // Inject the Permission repository
   constructor(
     @InjectRepository(Permissions)
     private permissionRepository: Repository<Permissions>,
-  ) {}
+  ) { }
 
   // Create a new Permission
   async create(
-    permissionData: Partial<CreatePermissionDto>,
+    permissionData: PermissionInput,
   ): Promise<Permissions> {
     const queryRunner =
       this.permissionRepository.manager.connection.createQueryRunner()
@@ -48,7 +56,8 @@ export class PermissionService {
       // create permission instance
       const permission = manager.create(Permissions, {
         ...permissionData,
-        appName: appName[permissionData.appName].replace(/\b\w/g, (char) =>
+        // Use the string value directly — the numeric enum lookup breaks for REST calls
+        appName: String(permissionData.appName).replace(/\b\w/g, (char) =>
           char.toUpperCase(),
         ),
         groupName: 'Default',
@@ -59,11 +68,14 @@ export class PermissionService {
           char.toUpperCase(),
         ),
         slug: slugify(
-          `${appName[permissionData.appName]}:${permissionData.module}:${permissionData.action}`.replace(
+          `${String(permissionData.appName)}:${permissionData.module}:${permissionData.action}`.replace(
             /\b\w/g,
             (char) => char.toUpperCase(),
           ),
         ),
+        // Explicitly carry through optional route fields
+        httpMethod: permissionData.httpMethod ? permissionData.httpMethod.toUpperCase() : null,
+        route: permissionData.route ?? null,
       })
 
       // save permission & return
@@ -213,7 +225,7 @@ export class PermissionService {
   // Update a Permission
   async update(
     id: number,
-    permissionData: Partial<UpdatePermissionDto>,
+    permissionData: PermissionInput,
   ): Promise<Permissions> {
     const queryRunner =
       this.permissionRepository.manager.connection.createQueryRunner()
@@ -236,25 +248,29 @@ export class PermissionService {
       }
 
       // update permission
+      const appNameStr = String(permissionData.appName ?? permission.appName)
+      const moduleStr = (permissionData.module ?? permission.module)
+      const actionStr = (permissionData.action ?? permission.action)
+
       const newPermission = await manager.save(
         manager.merge(Permissions, permission, {
           ...permissionData,
-          appName: appName[permissionData.appName].replace(/\b\w/g, (char) =>
-            char.toUpperCase(),
-          ),
+          // Use the string value directly — the numeric enum lookup breaks for REST calls
+          appName: appNameStr.replace(/\b\w/g, (char) => char.toUpperCase()),
           groupName: 'Default',
-          module: permissionData.module.replace(/\b\w/g, (char) =>
-            char.toUpperCase(),
-          ),
-          action: permissionData.action.replace(/\b\w/g, (char) =>
-            char.toUpperCase(),
-          ),
+          module: moduleStr.replace(/\b\w/g, (char) => char.toUpperCase()),
+          action: actionStr.replace(/\b\w/g, (char) => char.toUpperCase()),
           slug: slugify(
-            `${appName[permissionData.appName]}:${permissionData.module}:${permissionData.action}`.replace(
+            `${appNameStr}:${moduleStr}:${actionStr}`.replace(
               /\b\w/g,
               (char) => char.toUpperCase(),
             ),
           ),
+          // Explicitly carry through optional route fields
+          httpMethod: permissionData.httpMethod !== undefined
+            ? (permissionData.httpMethod ? permissionData.httpMethod.toUpperCase() : null)
+            : permission.httpMethod,
+          route: permissionData.route !== undefined ? permissionData.route : permission.route,
         }),
       )
 
@@ -307,6 +323,19 @@ export class PermissionService {
       // release queryRunner
       await queryRunner.release()
     }
+  }
+
+  // Find a Permission by HTTP method + route path
+  async findByRoute(
+    httpMethod: string,
+    route: string,
+  ): Promise<Permissions | null> {
+    return this.permissionRepository.findOne({
+      where: {
+        httpMethod: httpMethod.toUpperCase(),
+        route,
+      },
+    })
   }
 
   // Delete a Permission
