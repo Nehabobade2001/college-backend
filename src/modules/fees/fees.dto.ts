@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { IsNotEmpty, IsNumber, IsString, IsEnum, IsOptional, IsDate, Min } from 'class-validator'
+import { IsNotEmpty, IsNumber, IsString, IsEnum, IsOptional, IsDate, Min, IsUrl } from 'class-validator'
 import { Type } from 'class-transformer'
 
 export enum FeeType {
@@ -15,6 +15,12 @@ export enum PaymentMethod {
   NETBANKING = 'netbanking',
   CHEQUE = 'cheque',
   OTHER = 'other',
+}
+
+export enum SubmissionType {
+  STUDENT = 'student',
+  ADMIN = 'admin',
+  CENTER = 'center',
 }
 
 export class CreateFeeStructureDto {
@@ -143,6 +149,72 @@ export class RecordPaymentDto {
   @IsNumber()
   @IsOptional()
   centerId?: number
+}
+
+export class SubmitFeePaymentDto {
+  @IsNumber()
+  @IsNotEmpty()
+  studentFeeId: number
+
+  @IsNumber()
+  @Min(0)
+  @IsNotEmpty()
+  amount: number
+
+  @IsEnum(SubmissionType)
+  @IsNotEmpty()
+  submissionType: SubmissionType
+
+  @IsNumber()
+  @IsOptional()
+  submittedBy?: number
+
+  @IsString()
+  @IsOptional()
+  submittedByName?: string
+
+  @IsString()
+  @IsOptional()
+  paymentProofUrl?: string
+
+  @IsString()
+  @IsOptional()
+  screenshotUrl?: string
+
+  @IsString()
+  @IsOptional()
+  remarks?: string
+
+  @IsNumber()
+  @IsOptional()
+  centerId?: number
+}
+
+export class ApproveSubmissionDto {
+  @IsNumber()
+  @IsNotEmpty()
+  submissionId: number
+
+  @IsNumber()
+  @IsNotEmpty()
+  approvedBy: number
+
+  @IsEnum(PaymentMethod)
+  @IsNotEmpty()
+  paymentMethod: PaymentMethod
+
+  @IsDate()
+  @Type(() => Date)
+  @IsNotEmpty()
+  paymentDate: Date
+
+  @IsString()
+  @IsOptional()
+  transactionId?: string
+
+  @IsString()
+  @IsOptional()
+  remarks?: string
 }
 
 export class CreateInstallmentsDto {

@@ -6,12 +6,15 @@ import { FeeStructure } from '@/entities/FeeStructure'
 import { StudentFee } from '@/entities/StudentFee'
 import { FeePayment } from '@/entities/FeePayment'
 import { FeeInstallment } from '@/entities/FeeInstallment'
+import { FeeSubmission } from '@/entities/FeeSubmission'
 import {
   CreateFeeStructureDto,
   AssignFeeToStudentDto,
   RecordPaymentDto,
   CreateInstallmentsDto,
   FeeReportQueryDto,
+  SubmitFeePaymentDto,
+  ApproveSubmissionDto,
 } from './fees.dto'
 
 @Injectable()
@@ -25,6 +28,8 @@ export class FeesService {
     private readonly feePaymentRepo: Repository<FeePayment>,
     @InjectRepository(FeeInstallment)
     private readonly feeInstallmentRepo: Repository<FeeInstallment>,
+    @InjectRepository(FeeSubmission)
+    private readonly feeSubmissionRepo: Repository<FeeSubmission>,
   ) {}
 
   async createFeeStructure(dto: CreateFeeStructureDto): Promise<FeeStructure> {
@@ -55,6 +60,111 @@ export class FeesService {
     })
 
     return await this.studentFeeRepo.save(studentFee)
+  }
+
+  async submitFeePayment(dto: SubmitFeePaymentDto): Promise<FeeSubmission> {
+    const studentFee = await this.studentFeeRepo.findOne({
+      where: { id: dto.studentFeeId },
+      relations: ['student'],
+    })
+
+    if (!studentFee) {
+      throw new NotFoundException('Student fee record not found')
+    }
+
+    if (dto.amount > studentFee.pendingAmount) {
+      throw new BadRequestException('Submission amount exceeds pending amount')
+    }
+
+    const submission = this.feeSubmissionRepo.create({
+      studentFeeId: dto.studentFeeId,
+      studentId: studentFee.studentId,
+      amount: dto.amount,
+      submissionType: dto.submissionType,
+      submittedBy: dto.submittedBy,
+      submittedByName: dto.submittedByName,
+      paymentProofUrl: dto.paymentProofUrl,
+      screenshotUrl: dto.screenshotUrl,
+      remarks: dto.remarks,
+      centerId: dto.centerId,
+      status: 'pending',
+    })
+
+    return await this.feeSubmissionRepo.save(submission)
+  }
+
+  async approveSubmission(dto: ApproveSubmissionDto): Promise<FeePayment> {
+    const submission = await this.feeSubmissionRepo.findOne({
+      where: { id: dto.submissionId },
+      relations: ['studentFee'],
+    })
+
+    if (!submission) {
+      throw new NotFoundException('Submission not found')
+    }
+
+    if (submission.status !== 'pending') {
+      throw new BadRequestException('Submission already processed')
+    }
+
+    const receiptNumber = await this.generateReceiptNumber()
+
+    const payment = this.feePaymentRepo.create({
+      studentFeeId: submission.studentFeeId,
+      studentId: submission.studentId,
+      amount: submission.amount,
+      paymentDate: dto.paymentDate,
+      paymentMethod: dto.paymentMethod,
+      transactionId: dto.transactionId,
+      receiptNumber,
+      remarks: dto.remarks || submission.remarks,
+      collectedBy: dto.approvedBy,
+      centerId: submission.centerId,
+    })
+
+    await this.feePaymentRepo.save(payment)
+
+    const studentFee = submission.studentFee
+    studentFee.paidAmount += submission.amount
+    studentFee.pendingAmount -= submission.amount
+    studentFee.status = studentFee.pendingAmount === 0 ? 'paid' : 'partial'
+    await this.studentFeeRepo.save(studentFee)
+
+    submission.status = 'approved'
+    submission.approvedBy = dto.approvedBy
+    submission.approvedAt = new Date()
+    submission.paymentId = payment.id
+    await this.feeSubmissionRepo.save(submission)
+
+    return payment
+  }
+
+  async rejectSubmission(submissionId: number, rejectedBy: number, reason: string) {
+    const submission = await this.feeSubmissionRepo.findOne({
+      where: { id: submissionId },
+    })
+
+    if (!submission) {
+      throw new NotFoundException('Submission not found')
+    }
+
+    submission.status = 'rejected'
+    submission.approvedBy = rejectedBy
+    submission.approvedAt = new Date()
+    submission.remarks = reason
+
+    return await this.feeSubmissionRepo.save(submission)
+  }
+
+  async getPendingSubmissions(centerId?: number) {
+    const where: any = { status: 'pending', deletedAt: IsNull() }
+    if (centerId) where.centerId = centerId
+
+    return await this.feeSubmissionRepo.find({
+      where,
+      relations: ['student', 'studentFee', 'studentFee.feeStructure'],
+      order: { createdAt: 'DESC' },
+    })
   }
 
   async recordPayment(dto: RecordPaymentDto): Promise<FeePayment> {
@@ -165,7 +275,7 @@ export class FeesService {
 
     return await this.feePaymentRepo.find({
       where,
-      relations: ['student', 'studentFee', 'studentFee.feeStructure'],
+      relations: ['student', 'studentFee', 'studentFee.feeStructure', 'studentFee.feeStructure.course'],
       order: { paymentDate: 'DESC' },
     })
   }
@@ -191,3 +301,6 @@ export class FeesService {
     return `RCP${year}${month}${String(count + 1).padStart(6, '0')}`
   }
 }
+
+
+
