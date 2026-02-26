@@ -1,4 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+/* eslint-disable prettier/prettier */
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from './User';
+import { Center } from './Center';
 
 @Entity()
 export class Student {
@@ -31,6 +34,20 @@ export class Student {
 
   @Column({ type: 'int', nullable: true })
   organizationId?: number | null;
+
+  @Column({ type: 'int', nullable: true })
+  userId?: number | null;
+
+  @OneToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'userId' })
+  user?: User;
+
+  @Column({ type: 'int', nullable: true })
+  centerId?: number | null;
+
+  @ManyToOne(() => Center, { nullable: true })
+  @JoinColumn({ name: 'centerId' })
+  center?: Center;
 
   @Column({ type: 'varchar', default: 'active' })
   status: string;

@@ -112,6 +112,10 @@ export class CreateStudentDto {
   organizationId?: number;
 
   @IsOptional()
+  @IsNumber()
+  centerId?: number;
+
+  @IsOptional()
   @IsString()
   status?: string;
 }

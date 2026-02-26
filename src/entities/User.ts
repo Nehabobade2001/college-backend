@@ -38,6 +38,7 @@ export enum UserType {
   franchise = 'franchise',
   thirdParty = 'thirdParty',
   thirdPartyEmployee = 'thirdPartyEmployee',
+  student = 'student',
 }
 
 registerEnumType(UserType, {
@@ -150,6 +151,64 @@ export class User {
   @Field(() => Designation, { nullable: true })
   @Column({ type: 'varchar' })
   designation: Designation
+
+  // Student specific fields
+  @Column({ type: 'varchar', nullable: true })
+  gender?: string | null
+
+  @Column({ type: 'date', nullable: true })
+  dateOfBirth?: Date | null
+
+  @Column({ type: 'text', nullable: true })
+  address?: string | null
+
+  @Column({ type: 'varchar', nullable: true })
+  city?: string | null
+
+  @Column({ type: 'varchar', nullable: true })
+  state?: string | null
+
+  @Column({ type: 'varchar', nullable: true })
+  pincode?: string | null
+
+  @Column({ type: 'varchar', nullable: true })
+  enrollmentNumber?: string | null
+
+  @Column({ type: 'varchar', nullable: true })
+  courseName?: string | null
+
+  @Column({ type: 'varchar', nullable: true })
+  branch?: string | null
+
+  @Column({ type: 'int', nullable: true })
+  semester?: number | null
+
+  @Column({ type: 'date', nullable: true })
+  admissionDate?: Date | null
+
+  @Column({ type: 'varchar', nullable: true })
+  sessionYear?: string | null
+
+  @Column({ type: 'varchar', nullable: true })
+  profilePhoto?: string | null
+
+  @Column({ type: 'varchar', nullable: true })
+  aadhaarNumber?: string | null
+
+  @Column({ type: 'varchar', nullable: true })
+  qualification?: string | null
+
+  @Column({ type: 'float', nullable: true })
+  percentage?: number | null
+
+  @Column({ type: 'varchar', nullable: true })
+  documentUrl?: string | null
+
+  @Column({ type: 'varchar', nullable: true })
+  previousMarksheet?: string | null
+
+  @Column({ type: 'varchar', nullable: true })
+  category?: string | null
 
   @Field(() => User, { nullable: true })
   @ManyToOne(() => User, (user) => user.subordinates, { nullable: true })
