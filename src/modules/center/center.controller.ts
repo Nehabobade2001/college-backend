@@ -8,8 +8,8 @@ export class CenterController {
 
   @Get()
 
-  async list() {
-    return this.centerService.findAll();
+  async list(@Req() req: any) {
+    return this.centerService.findAll(req.user);
 
   }
 
