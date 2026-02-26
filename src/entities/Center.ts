@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+/* eslint-disable prettier/prettier */
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 
 @Entity('centers')
 export class Center {
@@ -45,10 +46,12 @@ export class Center {
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
 
+  @OneToMany('Student', 'center')
+  students?: any[];
+
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
 }
- 

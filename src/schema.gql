@@ -64,6 +64,7 @@ enum UserType {
   franchise
   thirdParty
   thirdPartyEmployee
+  student
 }
 
 """
