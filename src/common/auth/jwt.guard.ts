@@ -61,16 +61,17 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         requiredPermissions,
       )
 
-      if (!isValid) {
+      if (!isValid || isValid.error) {
         // throw graphql error
         throwGqlError(ErrorCodes.UNAUTHORIZED)
       }
 
-      // set user to context
-      req.user = decoded
+      // set FULL user entity (with userType, roles, email) to context
+      // so controllers can do role-based filtering (e.g. franchise sees only their center)
+      req.user = isValid.user ?? decoded
 
       if (gqlContext) {
-        gqlContext.user = decoded
+        gqlContext.user = isValid.user ?? decoded
       }
 
       return true

@@ -20,7 +20,25 @@ export class CenterService {
     private readonly mailService: MailService,
   ) { }
 
-  async findAll() {
+  async findAll(authUser?: any) {
+    if (!authUser) return this.centerRepo.find();
+
+    // Detect franchise by userType OR by any assigned role whose name contains 'franchise'
+    const isFranchise =
+      String(authUser.userType || '').toLowerCase() === 'franchise' ||
+      (Array.isArray(authUser.roles) &&
+        authUser.roles.some((r: any) =>
+          String(r.name || '').toLowerCase().includes('franchise')
+        ));
+
+    this.logger.log(
+      `[findAll] user=${authUser.email} userType=${authUser.userType} isFranchise=${isFranchise}`
+    );
+
+    if (isFranchise) {
+      return this.centerRepo.find({ where: { email: authUser.email } });
+    }
+
     return this.centerRepo.find();
   }
 

@@ -7,12 +7,11 @@ import { Permissions } from '@/common/decorators/PermissionDecorator';
 @UseGuards(JwtAuthGuard)
 @Controller('centers')
 export class CenterController {
-  constructor(private readonly centerService: CenterService) {}
+  constructor(private readonly centerService: CenterService) { }
 
   @Get()
-  @Permissions('MasterApp:Center:Read')
-  async list() {
-    return this.centerService.findAll();
+  async list(@Req() req: any) {
+    return this.centerService.findAll(req.user);
   }
 
   @Post()
