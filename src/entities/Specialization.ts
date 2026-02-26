@@ -29,10 +29,10 @@ export class Specialization {
   @Column({ type: 'text', nullable: true })
   description: string
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', nullable: true })
   streamId: number
 
-  @ManyToOne(() => Stream, (stream) => stream.specializations)
+  @ManyToOne(() => Stream, (stream) => stream.specializations, { nullable: true })
   @JoinColumn({ name: 'streamId' })
   stream: Stream
 

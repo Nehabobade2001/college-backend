@@ -32,8 +32,8 @@ export class CreateAddressDto {
   @MaxLength(20)
   pincode: string
 
-  @IsEnum(AddressType)
   @IsOptional()
+  @IsEnum(AddressType)
   type?: AddressType
 
   @IsString()
@@ -81,8 +81,8 @@ export class UpdateAddressDto {
   @MaxLength(20)
   pincode?: string
 
-  @IsEnum(AddressType)
   @IsOptional()
+  @IsEnum(AddressType)
   type?: AddressType
 
   @IsString()

@@ -83,7 +83,7 @@ export class MasterManagementTables1740243000000
         name VARCHAR(255) NOT NULL,
         code VARCHAR(100) NOT NULL UNIQUE,
         description TEXT NULL,
-        streamId INT NOT NULL,
+        streamId INT NULL,
         status ENUM('active', 'inactive') DEFAULT 'active',
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

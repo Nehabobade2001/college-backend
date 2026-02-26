@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class AddRouteToPermissions1740475800000 implements MigrationInterface {

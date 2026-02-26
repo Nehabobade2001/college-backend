@@ -17,8 +17,16 @@ export class CreateSpecializationDto {
   description?: string
 
   @IsInt()
-  @IsNotEmpty()
-  streamId: number
+  @IsOptional()
+  streamId?: number
+
+  @IsInt()
+  @IsOptional()
+  programId?: number
+
+  @IsInt()
+  @IsOptional()
+  departmentId?: number
 
   @IsEnum(SpecializationStatus)
   @IsOptional()

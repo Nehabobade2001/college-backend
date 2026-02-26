@@ -166,6 +166,89 @@ type Package {
   deletedAt: DateTime
 }
 
+type Event {
+  id: Int!
+  title: String!
+  description: String!
+  type: EventType!
+  priority: EventPriority!
+  status: EventStatus!
+  startDate: DateTime!
+  endDate: DateTime
+  centerIds: [Int!]
+  studentIds: [Int!]
+  attachmentUrl: String
+  createdBy: Int!
+  creator: User
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum EventType {
+  NOTICE
+  EVENT
+  HOLIDAY
+  ANNOUNCEMENT
+}
+
+enum EventPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+type EventMeta {
+  totalItems: Int!
+  totalPages: Int!
+  currentPage: Int!
+  limit: Int!
+}
+
+type Complaint {
+  id: Int!
+  title: String!
+  description: String!
+  status: ComplaintStatus!
+  priority: ComplaintPriority!
+  studentId: Int!
+  centerId: Int
+  assignedTo: Int
+  resolution: String
+  resolvedAt: DateTime
+  student: User
+  assignedUser: User
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum ComplaintStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum ComplaintPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+type ComplaintMeta {
+  totalItems: Int!
+  totalPages: Int!
+  currentPage: Int!
+  limit: Int!
+}
+
 type Query {
   paginatedUsers(ListInputDTO: ListInputDTO!): PaginatedUsers!
   findUserById(id: Float!): User!
